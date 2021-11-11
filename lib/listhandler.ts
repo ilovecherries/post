@@ -2,16 +2,6 @@ import { FullModel } from "../views/views";
 import { cookieWrapper } from "./auth";
 
 export class CRUDListHandler<U, T extends FullModel<U>> {
-    delegate: any;
-    ctor: new (p: Partial<T>) => T;
-    name: string;
-
-    constructor(name: string, ctor: new (p: Partial<T>) => T, delegate: any) {
-        this.name = name;
-        this.delegate = delegate;
-        this.ctor = ctor;
-    }
-
     static idReqGenerator<V, U, T extends FullModel<U>>(name: string, 
         ctor: new (p: Partial<T>) => T, 
         delegate: any, 
