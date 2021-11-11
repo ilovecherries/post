@@ -2,7 +2,7 @@ import { UserDto } from "../../../views/user";
 import prisma from "../../../lib/prisma";
 import { Post, PostData, PostDto } from "../../../views/post";
 
-import { CRUDListHandler } from "../../../lib/listhandler";
+import { CRUDListHandler } from "../../../lib/crudlisthandler";
 
 function stripValues(data: any): PostData {
     return {

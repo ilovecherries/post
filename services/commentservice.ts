@@ -13,8 +13,8 @@ export async function createComment(userId: number, postId: number,
         include: {
             author: true
         }
-    }).then(post => {
-        const commentD = new Comment(post);
+    }).then(comment => {
+        const commentD = new Comment(comment);
         return commentD;
     });
 }

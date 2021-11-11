@@ -1,7 +1,7 @@
 import prisma from "../../../lib/prisma";
 import { Comment, CommentData, CommentDto } from "../../../views/comment";
 
-import { CRUDListHandler } from "../../../lib/listhandler";
+import { CRUDListHandler } from "../../../lib/crudlisthandler";
 
 function stripValues(data: any): CommentData {
     return {
