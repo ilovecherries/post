@@ -12,7 +12,11 @@ export class CRUDListHandler<U, T extends FullModel<U>> {
         this.ctor = ctor;
     }
 
-    static idReqGenerator(name: string, ctor: new (p: Partial<T>) => T, delegate: any): (req: any, res: any) => void {
+    static idReqGenerator<V, U, T extends FullModel<U>>(name: string, 
+        ctor: new (p: Partial<T>) => T, 
+        delegate: any, 
+        stripValues: (p: any) => V,
+        include: any = {}): (req: any, res: any) => void {
         return async function(req, res) {
             let { id } = req.query;
             id = parseInt(id);
@@ -20,9 +24,7 @@ export class CRUDListHandler<U, T extends FullModel<U>> {
             if (req.method === 'GET') {
                 return delegate.findUnique({
                     where: { id },
-                    include: {
-                        author: true
-                    }
+                    include
                 }).then(o => {
                     if (o === null) {
                         res.status(404).send(`${name} not found`);
@@ -39,9 +41,7 @@ export class CRUDListHandler<U, T extends FullModel<U>> {
                 .then(user => {
                     delegate.findUnique({
                         where: { id },
-                        include: {
-                            author: true
-                        }
+                        include
                     }).then(o => {
                         if (o === null) {
                             res.status(404).send(`${name} not found`);
@@ -54,14 +54,17 @@ export class CRUDListHandler<U, T extends FullModel<U>> {
                         }
 
                         Object.assign(o, req.body);
+                        const stripped = stripValues(o);
 
                         delegate.update({
                             where: {
                                 id: id
                             },
-                            data: o
+                            data: stripped,
+                            include
                         }).then(o => {
-                            res.status(200).send(o);
+                            let i = new ctor(o);
+                            res.status(200).send(i.toDto());
                         });
                     });
                 })
@@ -71,9 +74,7 @@ export class CRUDListHandler<U, T extends FullModel<U>> {
                 .then(user => {
                     delegate.findUnique({
                         where: { id },
-                        include: {
-                            author: true
-                        }
+                        include
                     }).then(o => {
                         if (o === null) {
                             res.status(404).send(`${name} not found`);

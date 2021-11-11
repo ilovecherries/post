@@ -1,3 +1,4 @@
+import { Comment, CommentDto } from "./comment";
 import { User, UserDto } from "./user";
 import { FullModel } from "./views";
 
@@ -9,6 +10,7 @@ export interface PostData {
 export interface PostDto extends PostData {
     id: number;
     author: UserDto;
+    comments: CommentDto[];
 }
 
 export class Post implements PostData, FullModel<PostDto> {
@@ -16,6 +18,7 @@ export class Post implements PostData, FullModel<PostDto> {
     content: string;
     author: User;
     id: number;
+    comments: Comment[];
 
     /**
      *  
@@ -24,6 +27,7 @@ export class Post implements PostData, FullModel<PostDto> {
     constructor(payload: Partial<Post>) {
         // we should also initialize the author before we use the payload
         payload.author = new User(payload.author);
+        payload.comments = payload.comments.map(c => new Comment(c));
         
         Object.assign(this, payload);
 
@@ -34,7 +38,8 @@ export class Post implements PostData, FullModel<PostDto> {
             title: this.title,
             content: this.content,
             id: this.id,
-            author: this.author.toDto()
+            author: this.author.toDto(),
+            comments: this.comments.map(comment => comment.toDto())
         };
     }
 }
