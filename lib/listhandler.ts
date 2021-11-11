@@ -1,7 +1,7 @@
 import { FullModel } from "../views/views";
 import { cookieWrapper } from "./auth";
 
-export class CRUDListHandler<U, T extends FullModel<U>> {
+export class CRUDListHandler {
     static idReqGenerator<V, U, T extends FullModel<U>>(name: string, 
         ctor: new (p: Partial<T>) => T, 
         delegate: any, 
