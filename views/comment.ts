@@ -2,8 +2,11 @@
 import { User, UserDto } from "./user";
 import { FullModel } from "./views";
 
-export interface CommentData {
+export interface CommentEditable {
     content: string;
+}
+
+export interface CommentData extends CommentEditable{
     postId: number;
 }
 
@@ -24,7 +27,8 @@ export class Comment implements CommentData, FullModel<CommentDto> {
      */
     constructor(payload: Partial<Comment>) {
         // we should also initialize the author before we use the payload
-        payload.author = new User(payload.author);
+        if (payload.author !== undefined)
+            payload.author = new User(payload.author);
         
         Object.assign(this, payload);
 

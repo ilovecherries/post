@@ -14,7 +14,10 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         cookieWrapper(req)
         .then(user => {
-            const commentData = req.body as CommentData;
+            const commentData: CommentData = {
+                postId: parseInt(req.body.postId),
+                content: req.body.content,
+            };
 
             if (!commentData.content) {
                 res.status(400).send("The content is empty or missing");

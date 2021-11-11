@@ -26,20 +26,28 @@ export class Post implements PostData, FullModel<PostDto> {
      */
     constructor(payload: Partial<Post>) {
         // we should also initialize the author before we use the payload
-        payload.author = new User(payload.author);
-        payload.comments = payload.comments.map(c => new Comment(c));
+        if (payload.author !== undefined)
+            payload.author = new User(payload.author);
+        if (payload.comments !== undefined)
+            payload.comments = payload.comments.map(c => new Comment(c));
         
         Object.assign(this, payload);
 
     }
 
     public toDto(): PostDto {
-        return {
+        let comments;
+        let dto: PostDto =  {
             title: this.title,
             content: this.content,
             id: this.id,
-            author: this.author.toDto(),
-            comments: this.comments.map(comment => comment.toDto())
+            author: undefined,
+            comments: []
         };
+        if (this.author !== undefined)
+            dto.author = this.author.toDto();
+        if (this.comments !== undefined)
+            dto.comments = this.comments.map(c => c.toDto());
+        return dto;
     }
 }

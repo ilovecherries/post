@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import React from 'react';
-import { useRouter } from 'next/router';
 import prisma from '../../lib/prisma';
 import { Post } from '../../views/post';
+import { Comment } from '../../views/comment';
 
 export async function getStaticPaths(ctx) {
     const posts = await prisma.post.findMany();
@@ -20,19 +20,36 @@ export async function getStaticPaths(ctx) {
 export async function getStaticProps({ params }) {
     const post = await prisma.post.findUnique({
         where: { id: parseInt(params.id) },
-        include: { author: true, comments: true }
+        include: { author: true }
+    });
+
+    const comments = await prisma.comment.findMany({
+        where: { postId: post.id },
+        include: { author: true }
     });
 
     const postD = new Post(post).toDto();
+    const commentsD = comments.map(c => (new Comment(c)).toDto());
+
 
     return {
         props: {
-            post: postD
+            post: postD,
+            comments: commentsD
         }
     }
 }
 
-export default function PageView({ post }) {
+function CommentView({ comment }) {
+    return (
+        <div>
+            <p>{comment.author.username}</p>
+            <p>{comment.content}</p>
+        </div>
+    )
+}
+
+export default function PageView({ post, comments }) {
     return (
         <div>
             <Head>
@@ -45,6 +62,10 @@ export default function PageView({ post }) {
                 <h1>{post.title}</h1>
                 <p>{post.content}</p>
             </main> 
+
+            {comments.map(comment => (
+                <CommentView key={comment.id} comment={comment} />
+            ))}
         </div>
     )
 }
