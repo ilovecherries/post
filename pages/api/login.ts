@@ -13,7 +13,7 @@ export default async function handler(req, res)
     }
 
     try {
-        const authtoken = await login(credentials);
+        const authtoken = await login(credentials.username, credentials.password);
         setCookie({ res }, 'authtoken', authtoken, {
             maxAge: 1000 * 60 * 60 * 24 * 7,
             path: '/',

@@ -1,4 +1,4 @@
-import { UserCredentials } from "../../views/user";
+import { User, UserCredentials, UserDto } from "../../views/user";
 import { register } from "../../lib/auth";
 
 export default async function handler(req, res)
@@ -12,8 +12,9 @@ export default async function handler(req, res)
     }
 
     try {
-        const user = await register(credentials);
-        res.status(201).send(user);
+        const user = await register(credentials.username, credentials.password);
+        const userD = new User(user);
+        res.status(201).send(user.toDto());
     } catch (e) {
         res.status(400).send(e.message);
     }
